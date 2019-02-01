@@ -16,6 +16,12 @@ namespace Svz.Api.Controllers
             _service = new BookService();
         }
 
+        [HttpGet("ping")]
+        public ActionResult<string> Ping()
+        {
+            return Ok("pong");
+        }
+        
         [HttpGet]
         public async Task<ActionResult<IEnumerable<BookView>>> GetList()
         {
