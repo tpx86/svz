@@ -42,7 +42,7 @@ namespace Svz.Common
             }
         }
 
-        public BookView GetById(int bookId)
+        public CacheResponse<BookView> GetById(int bookId)
         {
             return _cache.Get(bookId);
         }

@@ -76,6 +76,7 @@ namespace Svz.Tool
         {
             try
             {
+                CheckInternal().GetAwaiter().GetResult();
                 SetupInternal().GetAwaiter().GetResult();
             }
             catch (Exception e)
@@ -128,14 +129,14 @@ namespace Svz.Tool
                 Ms($"Dropping ES Index: {item.Key}... ");
                 var resp = await esClient.DeleteIndexAsync(item.Key);
                 if (!resp.IsValid)
-                    throw new Exception("Error deleting ES index: " + resp.ServerError);
+                    throw new Exception("Error deleting ES index: " + resp.ServerError.Error);
                 Ok();
             }
 
             Ms("Creating ES index... ");
             var respCreate = await esClient.CreateIndexAsync(config.ElasticSearch.Index);
             if (!respCreate.IsValid)
-                throw new Exception("Error creating ES index: " + respCreate.ServerError);
+                throw new Exception("Error creating ES index: " + respCreate.ServerError.Error);
             Ok();
 
             Ms("Indexing data... ");

@@ -1,4 +1,5 @@
 using System;
+using Microsoft.AspNetCore.Http;
 using StackExchange.Redis;
 using ZeroFormatter;
 
@@ -16,22 +17,22 @@ namespace Svz.Common
             _cacheProvider = cacheProvider;
         }
 
-        public TValue Get(TKey key)
+        public CacheResponse<TValue> Get(TKey key)
         {
             var resp = _cacheProvider.Get(key);
             if (resp != null)
-                return resp;
+                return CacheResponse<TValue>.Cached(resp);
 
             resp = _cacheValueSource.Get(key);
             _cacheProvider.Set(key, resp);
 
-            return resp;
+            return CacheResponse<TValue>.NonCached(resp);
         }
     }
 
     public interface ICacheManager<TKey, TValue>
     {
-        TValue Get(TKey key);
+        CacheResponse<TValue> Get(TKey key);
     }
 
     public interface ICacheProvider<TKey, TValue> : IDisposable

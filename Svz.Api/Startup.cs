@@ -34,7 +34,7 @@ namespace Svz.Api
         public void Configure(IApplicationBuilder app, IHostingEnvironment env)
         {
             app.UseCors(
-                options => options.AllowAnyHeader().AllowAnyMethod().AllowAnyOrigin()
+                options => options.AllowAnyHeader().AllowAnyMethod().AllowAnyOrigin().WithExposedHeaders("X-From-Redis", "X-Node-Name")
             );
             
             if (env.IsDevelopment())
@@ -42,6 +42,12 @@ namespace Svz.Api
             else
                 app.UseHsts();
 
+            app.Use(async (context, next) =>
+            {
+                context.Response.Headers.Add("X-Node-Name", System.Environment.MachineName);
+                await next.Invoke();
+            });
+            
             app.UseHttpsRedirection();
             app.UseMvc();
         }

@@ -34,7 +34,10 @@ namespace Svz.Api.Controllers
             if (bookId <= 0)
                 return BadRequest("Invalid bookId");
 
-            return Ok(_service.GetById(bookId));
+            var resp = _service.GetById(bookId);
+            HttpContext.Response.Headers.Add("X-From-Redis", resp.FromCache.ToString());
+            
+            return Ok(resp.Value);
         }
 
         [HttpGet("search")]
